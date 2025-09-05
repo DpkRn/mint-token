@@ -11,10 +11,7 @@ body {
     min-height: 100vh;
     line-height: 1.6;
 }
-.content {
-  position: relative;
-  z-index: 1;
-}
+
 
 /* Container */
 .container {

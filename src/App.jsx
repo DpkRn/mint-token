@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import MatrixBackground from "./MatrixBackground";
+import Header from "./components/Header";
+import FeatureGrid from "./components/FeatureGrid";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [network, setNetwork] = useState("devnet");
@@ -175,219 +178,224 @@ function App() {
 
   return (
     <div className="App">
-      <MatrixBackground/>
-      <div className="content">
-        {/* Your existing UI goes here */}
+      <MatrixBackground />
+        <Navbar/>
         <div className="container">
-      <div className="header">
-        
-        <h1>🚀 Solana SPL Token Creator</h1>
-        <p>Create and manage your SPL tokens on Solana blockchain</p>
-      </div>
-      <div className="feature-grid">
-        
-        <div className="feature-card">
-          
-          <div className="feature-icon">🔐</div> <h3>Phantom Integration</h3>
-          <p>Seamless wallet connection</p>
-        </div>
-        <div className="feature-card">
-          
-          <div className="feature-icon">⚡</div> <h3>Fast Creation</h3>
-          <p>Deploy tokens in seconds</p>
-        </div>
-        <div className="feature-card">
-          
-          <div className="feature-icon">🎯</div> <h3>Full Control</h3>
-          <p>Manage mint authority</p>
-        </div>
-        <div className="feature-card">
-         
-          <div className="feature-icon">🌐</div> <h3>Mainnet Ready</h3>
-          <p>Production-grade deployment</p>
-        </div>
-      </div>
-      <div className="main-content">
-        <div className="card">
-          <h2>🔗 Wallet Connection</h2>
+        <Header/>
+         <FeatureGrid/>
+          <div className="main-content">
+            <div className="card">
+              <h2>🔗 Wallet Connection</h2>
 
-          <div className="network-selector">
-            <button
-              className={`network-btn ${network === "devnet" ? "active" : ""}`}
-              onClick={() => setNetwork("devnet")}
-            >
-              Devnet
-            </button>
-            <button
-              className={`network-btn ${
-                network === "mainnet-beta" ? "active" : ""
-              }`}
-              onClick={() => setNetwork("mainnet-beta")}
-            >
-              Mainnet
-            </button>
-          </div>
+              <div className="network-selector">
+                <button
+                  className={`network-btn ${
+                    network === "devnet" ? "active" : ""
+                  }`}
+                  onClick={() => setNetwork("devnet")}
+                >
+                  Devnet
+                </button>
+                <button
+                  className={`network-btn ${
+                    network === "mainnet-beta" ? "active" : ""
+                  }`}
+                  onClick={() => setNetwork("mainnet-beta")}
+                >
+                  Mainnet
+                </button>
+              </div>
 
-          <button className="btn" onClick={connectWallet}>
-            {wallet ? "✓ Wallet Connected" : "Connect Phantom Wallet"}
-          </button>
+              <button className="btn" onClick={connectWallet}>
+                {wallet ? "✓ Wallet Connected" : "Connect Phantom Wallet"}
+              </button>
 
-          {wallet && (
-            <div className="wallet-info">
-              <p>
-                <strong>Connected:</strong> {wallet.slice(0, 4)}...
-                {wallet.slice(-4)}
-              </p>
-              <p>
-                <strong>Network:</strong> {network}
-              </p>
-              <p>
-                <strong>Balance:</strong> {balance ?? "Loading..."} SOL
-              </p>
+              {wallet && (
+                <div className="wallet-info">
+                  <p>
+                    <strong>Connected:</strong> {wallet.slice(0, 4)}...
+                    {wallet.slice(-4)}
+                  </p>
+                  <p>
+                    <strong>Network:</strong> {network}
+                  </p>
+                  <p>
+                    <strong>Balance:</strong> {balance ?? "Loading..."} SOL
+                  </p>
+                </div>
+              )}
+
+              {status.message && (
+                <div className={`status ${status.type}`}>{status.message}</div>
+              )}
             </div>
-          )}
+            <div className="card">
+              <h2>🪙 Create SPL Token</h2>
+              <form onSubmit={createToken} id="tokenForm">
+                <div className="form-group">
+                  <label htmlFor="tokenName">Token Name *</label>
+                  <input
+                    type="text"
+                    id="tokenName"
+                    placeholder="e.g., My Awesome Token"
+                    value={tokenData.name}
+                    onChange={(e) =>
+                      setTokenData({ ...tokenData, name: e.target.value })
+                    }
+                    required
+                  />
+                </div>
 
-          {status.message && (
-            <div className={`status ${status.type}`}>{status.message}</div>
-          )}
+                <div className="form-group">
+                  <label htmlFor="tokenSymbol">Symbol *</label>
+                  <input
+                    type="text"
+                    id="tokenSymbol"
+                    placeholder="e.g., MAT"
+                    maxLength="10"
+                    value={tokenData.symbol}
+                    onChange={(e) =>
+                      setTokenData({ ...tokenData, symbol: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="tokenDecimals">Decimals</label>
+                  <input
+                    type="number"
+                    id="tokenDecimals"
+                    min="0"
+                    max="9"
+                    value={tokenData.decimals}
+                    onChange={(e) =>
+                      setTokenData({
+                        ...tokenData,
+                        decimals: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="initialSupply">Initial Supply</label>
+                  <input
+                    type="number"
+                    id="initialSupply"
+                    placeholder="1000000"
+                    min="0"
+                    value={tokenData.initialSupply}
+                    onChange={(e) =>
+                      setTokenData({
+                        ...tokenData,
+                        initialSupply: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="tokenDescription">Description</label>
+                  <textarea
+                    id="tokenDescription"
+                    placeholder="Describe your token..."
+                    value={tokenData.description}
+                    onChange={(e) =>
+                      setTokenData({
+                        ...tokenData,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="tokenImage">Image URL</label>
+                  <input
+                    type="url"
+                    id="tokenImage"
+                    placeholder="https://example.com/image.png"
+                    value={tokenData.image}
+                    onChange={(e) =>
+                      setTokenData({ ...tokenData, image: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="twitter-url">Twitter URL</label>
+                  <input
+                    type="url"
+                    id="tokenImage"
+                    placeholder="https://example.com/image.png"
+                    value={tokenData.image}
+                    onChange={(e) =>
+                      setTokenData({ ...tokenData, image: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="website-url">Website URL</label>
+                  <input
+                    type="url"
+                    id="tokenImage"
+                    placeholder="https://example.com/image.png"
+                    value={tokenData.image}
+                    onChange={(e) =>
+                      setTokenData({ ...tokenData, image: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="freezeAuthority"
+                      checked={tokenData.freezeAuthority}
+                      onChange={(e) =>
+                        setTokenData({
+                          ...tokenData,
+                          freezeAuthority: e.target.checked,
+                        })
+                      }
+                    />
+                    Enable Freeze Authority
+                  </label>
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="mintAuthority"
+                      checked={tokenData.mintAuthority}
+                      onChange={(e) =>
+                        setTokenData({
+                          ...tokenData,
+                          mintAuthority: e.target.checked,
+                        })
+                      }
+                    />
+                    Retain Mint Authority
+                  </label>
+                </div>
+
+                <button type="submit" className="btn" id="createTokenBtn">
+                  Create Token
+                </button>
+              </form>
+
+              {status.type && (
+                <div className={`status ${status.type}`} id="tokenStatus">
+                  {status.message}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-       <div className="card">
-        <h2>🪙 Create SPL Token</h2>
-        <form onSubmit={createToken} id="tokenForm">
-          <div className="form-group">
-            <label htmlFor="tokenName">Token Name *</label>
-            <input
-              type="text"
-              id="tokenName"
-              placeholder="e.g., My Awesome Token"
-              value={tokenData.name}
-              onChange={(e) =>
-                setTokenData({ ...tokenData, name: e.target.value })
-              }
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="tokenSymbol">Symbol *</label>
-            <input
-              type="text"
-              id="tokenSymbol"
-              placeholder="e.g., MAT"
-              maxLength="10"
-              value={tokenData.symbol}
-              onChange={(e) =>
-                setTokenData({ ...tokenData, symbol: e.target.value })
-              }
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="tokenDecimals">Decimals</label>
-            <input
-              type="number"
-              id="tokenDecimals"
-              min="0"
-              max="9"
-              value={tokenData.decimals}
-              onChange={(e) =>
-                setTokenData({ ...tokenData, decimals: Number(e.target.value) })
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="initialSupply">Initial Supply</label>
-            <input
-              type="number"
-              id="initialSupply"
-              placeholder="1000000"
-              min="0"
-              value={tokenData.initialSupply}
-              onChange={(e) =>
-                setTokenData({ ...tokenData, initialSupply: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="tokenDescription">Description</label>
-            <textarea
-              id="tokenDescription"
-              placeholder="Describe your token..."
-              value={tokenData.description}
-              onChange={(e) =>
-                setTokenData({ ...tokenData, description: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="tokenImage">Image URL</label>
-            <input
-              type="url"
-              id="tokenImage"
-              placeholder="https://example.com/image.png"
-              value={tokenData.image}
-              onChange={(e) =>
-                setTokenData({ ...tokenData, image: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                id="freezeAuthority"
-                checked={tokenData.freezeAuthority}
-                onChange={(e) =>
-                  setTokenData({
-                    ...tokenData,
-                    freezeAuthority: e.target.checked,
-                  })
-                }
-              />
-              Enable Freeze Authority
-            </label>
-          </div>
-
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                id="mintAuthority"
-                checked={tokenData.mintAuthority}
-                onChange={(e) =>
-                  setTokenData({
-                    ...tokenData,
-                    mintAuthority: e.target.checked,
-                  })
-                }
-              />
-              Retain Mint Authority
-            </label>
-          </div>
-
-          <button type="submit" className="btn" id="createTokenBtn">
-            Create Token
-          </button>
-        </form>
-
-        {status.type && (
-          <div className={`status ${status.type}`} id="tokenStatus">
-            {status.message}
-          </div>
-        )}
-      </div>
-      </div>
-      
     </div>
-      </div>
-    </div>
-    
   );
 }
 
